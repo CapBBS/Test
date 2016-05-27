@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -42,7 +41,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 @Override
                 public void onPeersAvailable(WifiP2pDeviceList peers) {
                     activity.wifiP2pDeviceList = peers;
-                    activity.displayPeers(peers);
+                    activity.displayPeers();
                 }
             });
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
@@ -56,7 +55,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 //activity.setTransferStatus(true);
                 //연결이 실행될때 MainActivity에서 실행할 메소드
                 Log.i("TAG","와이파이연결정보를 넘김");
-                activity.setNetworkToReadyState(wifiInfo);
+                activity.startSocketConnect(wifiInfo);
 
                 wifiP2pManager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
                     @Override
@@ -97,9 +96,6 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 //set variables to disable file transfer and reset client back to original state
 
                 //연결이 해제될때 MainActivity에서 실행할 메소드
-
-
-
                 wifiP2pManager.cancelConnect(channel, null);
 
             }

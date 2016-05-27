@@ -107,9 +107,6 @@ public class MainActivity extends ActivityGroup {
     private ServiceConnection sConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            //ServerService.ServerServiceBinder sbinder = (ServerService.ServerServiceBinder) service;
-            //sService = sbinder.getService();
-            //sService.registerCallback(sCallback);
 
             sService = ((ServerService.ServerServiceBinder)service).getService();
 
@@ -125,9 +122,6 @@ public class MainActivity extends ActivityGroup {
     private ServiceConnection cConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            // ClientService.ClientServiceBinder binder = (ClientService.ClientServiceBinder) service;
-            //  cService = binder.getService();
-            // cService.registerCallback(cCallback);
 
             cService = ((ClientService.ClientServiceBinder)service).getService();
 
@@ -392,7 +386,7 @@ public class MainActivity extends ActivityGroup {
     }
 
 
-    public void setNetworkToReadyState(WifiP2pInfo info) {
+    public void startSocketConnect(WifiP2pInfo info) {
         Log.i("TAG", "네트워크 정보가 저장됨");
         if (info.isGroupOwner) {
             Log.i("TAG", "그룹 오너임");
@@ -435,9 +429,9 @@ public class MainActivity extends ActivityGroup {
     /*
     피어를 찾았을때 찾은 피어를 버튼으로 보여주는 함수
      */
-    protected void displayPeers(WifiP2pDeviceList peers) {
+    protected void displayPeers() {
         deviceNameList = new ArrayList<String>();
-        for (WifiP2pDevice device : peers.getDeviceList()) {
+        for (WifiP2pDevice device : wifiP2pDeviceList.getDeviceList()) {
             deviceNameList.add(device.deviceName);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.musiclist_item, deviceNameList);
