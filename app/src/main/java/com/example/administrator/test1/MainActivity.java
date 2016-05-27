@@ -163,12 +163,11 @@ public class MainActivity extends ActivityGroup {
 
     public void startServerService(){
         Intent serverServiceIntent = new Intent(this,ServerService.class);
-        serverServiceIntent.putExtra("port", Integer.valueOf(Constants.CONNECT_PORT));
         serverServiceIntent.putExtra("serverResult", new ResultReceiver(null) {
             @Override
             protected void onReceiveResult(int resultCode, final Bundle resultData) {
 
-                if(resultCode == Constants.CONNECT_PORT )
+                if(resultCode == Constants.CLIENT_ADDRESS_SEND )
                 {
                     clientIpList.add(resultData.getString("client"));
                 }

@@ -5,6 +5,7 @@ package com.example.administrator.test1;
  */
 public class Constants {
     final static String HOST_ADRRESS = "192.168.49.1";
+    final static int CLIENT_ADDRESS_SEND = 10;
 
     final static int SEND_MUSIC = 1;
     final static int SEND_STATE = 2;

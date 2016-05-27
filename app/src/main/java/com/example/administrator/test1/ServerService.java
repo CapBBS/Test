@@ -22,7 +22,6 @@ public class ServerService extends IntentService {
     private boolean serviceEnabled;
 
     private ResultReceiver serverResult;
-    private int port;
 
     boolean isConnected;
 
@@ -64,11 +63,10 @@ public class ServerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        port = ((Integer) intent.getExtras().get("port")).intValue();
         serverResult = (ResultReceiver) intent.getExtras().get("serverResult");
 
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(Constants.CONNECT_PORT);
         } catch (IOException e) {
             Log.i("TAG", "서버소켓 생성 오류");
         }
@@ -85,7 +83,7 @@ public class ServerService extends IntentService {
                 Log.i("TAG", ip);
                 Bundle bundle = new Bundle();
                 bundle.putString("client", ip);
-                serverResult.send(port, bundle);
+                serverResult.send(Constants.CLIENT_ADDRESS_SEND, bundle);
 
                 socket.close();
             } catch (IOException e) {

@@ -22,8 +22,6 @@ import java.net.Socket;
  */
 public class ClientService extends IntentService {
 
-
-    private int port;
     InetAddress targetIP;
     ServerSocket serverSocket;
     private Socket socket;
@@ -68,10 +66,9 @@ public class ClientService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        port = (Integer) intent.getExtras().get("port");
         clientResult = (ResultReceiver) intent.getExtras().get("clientResult");
         try {
-            targetIP = InetAddress.getByName("192.168.49.1");
+            targetIP = InetAddress.getByName(Constants.HOST_ADRRESS);
             serverSocket = new ServerSocket(Constants.DATA_SEND_PORT);
         } catch (IOException e) {
             Log.i("TAG", "클라이언트 연결 생성 오류");
@@ -79,7 +76,7 @@ public class ClientService extends IntentService {
 
         while(!isConnected) {
             try {
-                socket = new Socket(targetIP, port);
+                socket = new Socket(targetIP, Constants.CONNECT_PORT);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.i("TAG", "서버 접속 시도 중 오류");

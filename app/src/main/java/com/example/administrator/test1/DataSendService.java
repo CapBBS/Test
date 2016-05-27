@@ -21,12 +21,9 @@ import java.util.ArrayList;
  */
 public class DataSendService extends IntentService {
 
-
-    private boolean serviceEnabled;
     boolean isConnected;
 
     private ResultReceiver sendResult;
-    private int port;
 
     DataInputStream dis;
     DataOutputStream dos;
@@ -37,15 +34,11 @@ public class DataSendService extends IntentService {
     public DataSendService() {
         super("DataSendService");
         Log.i("TAG", "데이터 샌드 서비스 생성");
-        serviceEnabled = true;
         isConnected = false;
         clientsIpList = new ArrayList<>();
     }
 
     public void onDestroy() {
-
-        serviceEnabled = false;
-
         stopSelf();
     }
 
@@ -116,7 +109,6 @@ public class DataSendService extends IntentService {
             } catch (IOException e) {
                 Log.i("TAG", "데이터 전송중 에러");
             }
-
 
             try {
                 dos.close();
