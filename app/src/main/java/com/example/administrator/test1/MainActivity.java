@@ -93,7 +93,6 @@ public class MainActivity extends ActivityGroup {
     protected WifiP2pDeviceList wifiP2pDeviceList;
     NotificationManager nmanager;
 
-    private WifiP2pInfo wifiInfo;
     private int currentpos = 100;
     private boolean firstclientmusicstart;
     private boolean musicState;
@@ -387,18 +386,18 @@ public class MainActivity extends ActivityGroup {
     }
 
 
-
-    public void setNetworkToReadyState(boolean status, WifiP2pInfo info, WifiP2pDevice device) {
+    public void setNetworkToReadyState(WifiP2pInfo info) {
         Log.i("TAG", "네트워크 정보가 저장됨");
-        wifiInfo = info;
-        manager.stopPeerDiscovery(channel, null);
-        btnFindpeer.setEnabled(false);
-        if (wifiInfo.isGroupOwner) {
+        if (info.isGroupOwner) {
             Log.i("TAG", "그룹 오너임");
-            startServerService();
+            if(sService == null) {
+                startServerService();
+            }
         } else {
             Log.i("TAG", "그룹 오너가 아님");
-            startClientService();
+            if(cService == null) {
+                startClientService();
+            }
         }
     }
 
@@ -430,7 +429,7 @@ public class MainActivity extends ActivityGroup {
     /*
     피어를 찾았을때 찾은 피어를 버튼으로 보여주는 함수
      */
-    protected void displayPeerButtons(WifiP2pDeviceList peers) {
+    protected void displayPeers(WifiP2pDeviceList peers) {
         deviceNameList = new ArrayList<String>();
         for (WifiP2pDevice device : peers.getDeviceList()) {
             deviceNameList.add(device.deviceName);
@@ -449,6 +448,7 @@ public class MainActivity extends ActivityGroup {
                             @Override
                             public void onSuccess() {
                                 Log.i("TAG", "와이파이 다이렉트가 연결됨");
+                                manager.stopPeerDiscovery(channel, null);
                             }
 
                             @Override

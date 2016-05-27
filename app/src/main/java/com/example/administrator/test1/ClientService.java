@@ -81,6 +81,7 @@ public class ClientService extends IntentService {
             try {
                 socket = new Socket(targetIP, port);
             } catch (IOException e) {
+                e.printStackTrace();
                 Log.i("TAG", "서버 접속 시도 중 오류");
                 break;
             }
