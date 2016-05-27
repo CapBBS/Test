@@ -71,6 +71,8 @@ public class ServerService extends IntentService {
             Log.i("TAG", "서버소켓 생성 오류");
         }
 
+        Bundle result = new Bundle();
+
         while (serviceEnabled) {
 
             try {
@@ -81,9 +83,11 @@ public class ServerService extends IntentService {
                 String ip = socket.getInetAddress().toString().replaceAll("/", "");
 
                 Log.i("TAG", ip);
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.ADDRESS, ip);
-                serverResult.send(Constants.CLIENT_ADDRESS_SEND, bundle);
+
+                result.putString(Constants.ADDRESS, ip);
+                serverResult.send(Constants.CLIENT_ADDRESS_SEND, result);
+
+                result.clear();
 
                 socket.close();
             } catch (IOException e) {
