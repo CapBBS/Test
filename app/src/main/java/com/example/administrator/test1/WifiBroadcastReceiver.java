@@ -70,12 +70,12 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                                         methods[i].invoke(wifiP2pManager, channel, netid, new WifiP2pManager.ActionListener() {
                                             @Override
                                             public void onSuccess() {
-                                                Log.i("TAG", "썽공!");
+                                                Log.i("TAG", "그룹 정보 삭제 성공");
                                             }
 
                                             @Override
                                             public void onFailure(int reason) {
-                                                Log.i("TAG", "씨래!");
+                                                Log.i("TAG", "그룹 정보 삭제 실패");
                                             }
                                         });
                                     }
