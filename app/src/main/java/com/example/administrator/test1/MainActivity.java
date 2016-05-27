@@ -1,6 +1,5 @@
 package com.example.administrator.test1;
 
-import android.app.Activity;
 import android.app.ActivityGroup;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -34,7 +33,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -81,7 +79,7 @@ public class MainActivity extends ActivityGroup {
     private static final String[] FTYPE = {"mp3", "wav"}; // 찾는타입 (.mp3 , .wav)형식 찾음
     private static String file_nm = null;  //음악파일의 uri를 string으로 받음
 
-    ArrayList<String> clientIpList;
+    ArrayList<String> clientAddressList;
 
     File sendtofile;
 
@@ -145,12 +143,21 @@ public class MainActivity extends ActivityGroup {
 
     public void startClientService(){
         Intent clientServiceIntent = new Intent(this, ClientService.class);
-        clientServiceIntent.putExtra("port", Integer.valueOf(Constants.CONNECT_PORT));
-        clientServiceIntent.putExtra("clientResult", new ResultReceiver(null) {
+        clientServiceIntent.putExtra(Constants.RESULT_RECEIVER, new ResultReceiver(null) {
             @Override
             protected void onReceiveResult(int resultCode, final Bundle resultData) {
                 switch (resultCode) {
 
+                    case Constants.SEND_MUSIC:
+                        break;
+
+                    case Constants.SEND_STATE:
+                        resultData.getBoolean(Constants.STATE);
+                        break;
+
+                    case Constants.SEND_POSITION:
+                        resultData.getInt(Constants.POSITION);
+                        break;
                 }
             }
         });
@@ -163,13 +170,13 @@ public class MainActivity extends ActivityGroup {
 
     public void startServerService(){
         Intent serverServiceIntent = new Intent(this,ServerService.class);
-        serverServiceIntent.putExtra("serverResult", new ResultReceiver(null) {
+        serverServiceIntent.putExtra(Constants.RESULT_RECEIVER, new ResultReceiver(null) {
             @Override
             protected void onReceiveResult(int resultCode, final Bundle resultData) {
 
                 if(resultCode == Constants.CLIENT_ADDRESS_SEND )
                 {
-                    clientIpList.add(resultData.getString("client"));
+                    clientAddressList.add(resultData.getString(Constants.ADDRESS));
                 }
 
             }
@@ -187,27 +194,27 @@ public class MainActivity extends ActivityGroup {
 
         Intent intent = new Intent(this, DataSendService.class);
 
-        intent.putExtra("iplist", clientIpList);
-        intent.putExtra("action", action);
+        intent.putExtra(Constants.ADDRESS_LIST, clientAddressList);
+        intent.putExtra(Constants.ACTION, action);
 
 
         switch (action) {
 
             case Constants.SEND_MUSIC :
-                intent.putExtra("music", sendtofile);
+                intent.putExtra(Constants.MUSIC, sendtofile);
                 break;
 
             case Constants.SEND_STATE :
-                intent.putExtra("state", musicState);
+                intent.putExtra(Constants.STATE, musicState);
                 break;
 
             case Constants.SEND_POSITION :
-                intent.putExtra("position", currentpos);
+                intent.putExtra(Constants.POSITION, currentpos);
                 break;
 
         }
 
-        intent.putExtra("datasendResult", new ResultReceiver(null) {
+        intent.putExtra(Constants.RESULT_RECEIVER, new ResultReceiver(null) {
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData) {
                 super.onReceiveResult(resultCode, resultData);
@@ -363,7 +370,7 @@ public class MainActivity extends ActivityGroup {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-        clientIpList = new ArrayList<>();
+        clientAddressList = new ArrayList<>();
     }
 
     public void wifiOnOFF(View view) {

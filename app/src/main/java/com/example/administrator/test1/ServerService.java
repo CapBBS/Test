@@ -63,7 +63,7 @@ public class ServerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        serverResult = (ResultReceiver) intent.getExtras().get("serverResult");
+        serverResult = (ResultReceiver) intent.getExtras().get(Constants.RESULT_RECEIVER);
 
         try {
             serverSocket = new ServerSocket(Constants.CONNECT_PORT);
@@ -82,7 +82,7 @@ public class ServerService extends IntentService {
 
                 Log.i("TAG", ip);
                 Bundle bundle = new Bundle();
-                bundle.putString("client", ip);
+                bundle.putString(Constants.ADDRESS, ip);
                 serverResult.send(Constants.CLIENT_ADDRESS_SEND, bundle);
 
                 socket.close();

@@ -23,19 +23,17 @@ public class DataSendService extends IntentService {
 
     boolean isConnected;
 
-    private ResultReceiver sendResult;
-
     DataInputStream dis;
     DataOutputStream dos;
 
-    ArrayList<String> clientsIpList;
+    ArrayList<String> clientsAddressList;
     Socket socket = null;
 
     public DataSendService() {
         super("DataSendService");
         Log.i("TAG", "데이터 샌드 서비스 생성");
         isConnected = false;
-        clientsIpList = new ArrayList<>();
+        clientsAddressList = new ArrayList<>();
     }
 
     public void onDestroy() {
@@ -45,10 +43,10 @@ public class DataSendService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        int action = intent.getExtras().getInt("action");
-        clientsIpList = intent.getExtras().getStringArrayList("iplist");
+        int action = intent.getExtras().getInt(Constants.ACTION);
+        clientsAddressList = intent.getExtras().getStringArrayList(Constants.ADDRESS_LIST);
 
-        for(String ip : clientsIpList) {
+        for(String ip : clientsAddressList) {
 
             while( !isConnected) {
                 try {
@@ -78,7 +76,7 @@ public class DataSendService extends IntentService {
 
                     case Constants.SEND_MUSIC:
 
-                        FileInputStream fis = new FileInputStream((File)intent.getExtras().get("music"));
+                        FileInputStream fis = new FileInputStream((File)intent.getExtras().get(Constants.MUSIC));
                         BufferedInputStream bis = new BufferedInputStream(fis);
                         byte[] buffer = new byte[4096 * 64];
                         int bytesRead = 0;
@@ -97,12 +95,12 @@ public class DataSendService extends IntentService {
 
                     case Constants.SEND_STATE:
 
-                        dos.writeBoolean(intent.getExtras().getBoolean("state"));
+                        dos.writeBoolean(intent.getExtras().getBoolean(Constants.STATE));
                         break;
 
                     case Constants.SEND_POSITION:
 
-                        dos.writeInt(intent.getExtras().getInt("position"));
+                        dos.writeInt(intent.getExtras().getInt(Constants.POSITION));
                         break;
 
                 }

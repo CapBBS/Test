@@ -3,6 +3,7 @@ package com.example.administrator.test1;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.util.Log;
@@ -66,7 +67,8 @@ public class ClientService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        clientResult = (ResultReceiver) intent.getExtras().get("clientResult");
+        clientResult = (ResultReceiver) intent.getExtras().get(Constants.RESULT_RECEIVER);
+
         try {
             targetIP = InetAddress.getByName(Constants.HOST_ADRRESS);
             serverSocket = new ServerSocket(Constants.DATA_SEND_PORT);
@@ -91,6 +93,7 @@ public class ClientService extends IntentService {
             Log.i("TAG", "클라이언트 소켓 종료 중 오류");
         }
 
+        Bundle result = new Bundle();
 
         while(serviceEnabled) {
 
@@ -135,11 +138,12 @@ public class ClientService extends IntentService {
                         break;
 
                     case Constants.SEND_STATE:
-                        Log.i("TAG", "state = " + dis.readBoolean());
+
+                        result.putBoolean(Constants.STATE, dis.readBoolean());
                         break;
 
                     case Constants.SEND_POSITION:
-                        Log.i("TAG", "position = " + dis.readInt());
+                        result.putInt(Constants.POSITION, dis.readInt());
                         break;
 
                 }
@@ -147,6 +151,9 @@ public class ClientService extends IntentService {
             } catch (IOException e) {
                 Log.i("TAG", "데이터 수신중 에러");
             }
+            clientResult.send(action, result);
+
+            result.clear();
 
         }
 
